@@ -1,0 +1,114 @@
+#----------------------------------
+# █▀▀█ █▀▀█ █░░░█ █▀▀█ █▀▀█ ░▀░ █▀▀▄
+# █▄▄▀ █░░█ █▄█▄█ █▄▄▀ █▄▄█ ▀█▀ █░░█
+# ▀░▀▀ ▀▀▀▀ ░▀░▀░ ▀░▀▀ ▀░░▀ ▀▀▀ ▀░░▀
+#----------------------------------
+
+# By RowRain - v0.1
+# My Discord Server: https://discord.gg/rowrain
+# RainCloud Hosting: https://discord.gg/raincloud
+options:
+    prefix: &f&o☽ <##A76CFF>&l&oP<##A156FF>&l&oS<##9B41FF>&l&op<##942BFF>&l&oa<##8E16FF>&l&ow<##8800FF>&l&on &f&o⌲
+    tp: &6♦ &e&oIşınlanılıyor &6♦
+    welcome_message: &d✩ &asᴜɴᴜᴄᴜʏᴀ ʜᴏsɢᴇʟᴅɪɴ &d✩
+    welcome_message_alt: &e★ &f%player%! &b&oDostum, maceraya geri dönmüşsün :) &e★
+    spawntp_message: &d✩ &asᴘᴀᴡɴ'ᴀ ʜᴏsɢᴇʟᴅɪɴ &d✩
+    spawntp_message_alt: &e★ &f%player%! &b&oOh, yine döndün! &e★
+    send_tp: &bSaniye Sonra Işınlanacaksınız!
+
+command /setspawn:
+    permission: pspawn.setspawn #Don't forget to enter permission levels for example: in LuckPerms
+    permission message: &e♦ &cYetkili değilsiniz! &e♦ 
+    trigger:
+        set {spawn} to location of player
+        set {world} to world of player 
+        send "{@prefix} &bDoğum noktası belirlenmiştir."
+        execute player command "gamerule doImmediateRespawn true" 
+        play sound "block.note_block.bell" at player
+
+command /spawn:
+    permission: pspawn.spawn
+    permission message: &k" &e♦ &cYetkili değilsiniz! &e♦ &f&k"
+    cooldown: 15 seconds
+    cooldown message: &k" &e♦ &c&oLütfen 15 saniye sonra deneyin! &e♦ &f&k"
+    trigger:
+        set {pspawn_control} to true
+        apply blindness to player for 5.5 seconds 
+        apply slowness to player for 5.5 seconds 
+        loop 5 times:
+            set {_timeLeft} to 5 - loop-number
+            send title "{@tp}" with subtitle "%{_timeLeft}%'{@send_tp}" to player
+            send actionbar "&dIşınlanmaya Son &f%{_timeLeft}%'&dSaniye" to player
+            if {pspawn_control} is false:
+                stop
+            play sound "block.note_block.bell" at player
+            apply blindness to player for 1 seconds 
+            apply slowness to player for 1 seconds
+            broadcast "{@prefix} &aBir Oyuncu Spawn Noktasına Işınlandı!"
+
+        teleport player to {spawn}     
+        apply blindness to player for 1.5 seconds  
+        play sound "BLOCK_ANVIL_LAND" at player 
+        send title "{@spawntp_message}" with subtitle "{@spawntp_message_alt}" to player
+        wait 1 second
+        send "{@prefix} &aBaşarıyla Spawn Alanı'na ışınlandınız!"               
+        send action bar "" to player
+        remove blindness from player
+
+on damage:
+    if {pspawn_control} is true:
+        stop
+    set {pspawn_control} to false
+    send "&cHasar Yedin bundan dolayı ışınlanman iptal edildi!" to player      
+
+on first join: 
+    if {world} is set:
+        if {spawn} is set:
+            teleport player to {world}
+            teleport player to {spawn}
+        apply blindness to player for 2 seconds  
+        send title "{@welcome_message}" with subtitle "{@welcome_message_alt}" to player
+        play sound "BLOCK_ANVIL_LAND" at player
+        wait 5 second
+        send "&8&n------- {@prefix} &8&n------- "
+        send ""
+        send "{@prefix} &bspawn'a &e/spawn &byazarak gidebilirsiniz!"
+        send ""
+        send "&8&n------- {@prefix} &8&n------- "
+        wait 0.50 second
+        remove blindness from player   
+
+on join:
+    if {world} is set:
+        if {spawn} is set:
+            teleport player to {world}
+        teleport player to {spawn}
+        apply blindness to player for 2 seconds  
+        send title "{@welcome_message}" with subtitle "{@welcome_message_alt}" to player
+        play sound "BLOCK_ANVIL_LAND" at player 
+        wait 5 second
+        send "&8&n------- {@prefix} &8&n------- "
+        send ""
+        send "{@prefix} &bspawn'a &e/spawn &byazarak gidebilirsiniz!"
+        send ""
+        send "&8&n------- {@prefix} &8&n------- "
+        wait 0.50 second
+        remove blindness from player
+
+on respawn:
+    if {world} is set:
+        if {spawn} is set:
+            teleport player to {world}
+            teleport player to {spawn}
+            apply blindness to player for 2 seconds 
+            send title "&4&lÖLDÜN SEN!" with subtitle "&aYeniden canlandın!" to player
+            wait 1 second
+            remove blindness from player
+
+    else:
+        send "{@prefix} &dDoğuş noktası ayarlanmamış. Lütfen bir alan seçip &e/setspawn &bkomutunu kullanın."
+    if {world} is set:  
+        set world of player to {world}  
+
+# Spigot Link: https://www.spigotmc.org/resources/%E2%9C%A8pspawn-setspawn-skript-easily-%E2%9C%85-1-16-5x1-20.113542/
+# Don't forget to star and comment!❤ 
