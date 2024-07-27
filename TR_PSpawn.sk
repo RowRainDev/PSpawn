@@ -59,7 +59,7 @@ on damage:
     if {pspawn_control} is true:
         stop
     set {pspawn_control} to false
-    send "&cHasar Yedin bundan dolayı ışınlanman iptal edildi!" to player      
+    send "&cHasar Yedin bundan dolayı ışınlanman iptal edildi!" to victim     
 
 on first join: 
     if {world} is set:
