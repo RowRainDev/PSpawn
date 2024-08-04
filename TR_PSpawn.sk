@@ -35,7 +35,7 @@ command /spawn:
         set {pspawn_control} to true
         apply blindness to player for 5.5 seconds 
         apply slowness to player for 5.5 seconds 
-        loop 5 times:
+        loop 5 time:
             set {_timeLeft} to 5 - loop-number
             send title "{@tp}" with subtitle "%{_timeLeft}%'{@send_tp}" to player
             send actionbar "&dIşınlanmaya Son &f%{_timeLeft}%'&dSaniye" to player
