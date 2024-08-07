@@ -24,7 +24,3 @@ PSpawn A Minecraft Skript!
 ## Katkıda Bulunun
 
 Katkıda bulunmak isterseniz, lütfen bir pull request gönderin veya bir issue açın.
-
-## Lisans
-
-Bu proje MIT Lisansı ile lisanslanmıştır.
