@@ -1,0 +1,122 @@
+#----------------------------------
+# █▀▀█ █▀▀█ █░░░█ █▀▀█ █▀▀█ ░▀░ █▀▀▄
+# █▄▄▀ █░░█ █▄█▄█ █▄▄▀ █▄▄█ ▀█▀ █░░█
+# ▀░▀▀ ▀▀▀▀ ░▀░▀░ ▀░▀▀ ▀░░▀ ▀▀▀ ▀░░▀
+#----------------------------------
+
+# By RowRain - v0.1
+# My Discord Server: https://discord.gg/rowrain
+# Hosting: https://discord.gg/raincloud
+
+options:
+    prefix: <##7608FB>&o★ <##8731FA>&oP<##9045FA>&oS<##985AFA>&op<##A16EFA>&oa<##A983F9>&ow<##B297F9>&on &7›› 
+    tp: <##EFD595>♦ <##EBEF95>&oTeleporting <##EFD595>♦
+    welcome_message: &d✩ <##A1EEBD> Welcome to Server. &d✩
+    welcome_message_alt: &e★ &f#%player%! <##F6D6D6>Welcome to our server, good time! &e★
+    spawntp_message: &d✩ <##7ED7C1> Welcome to Spawn. &d✩
+    spawntp_message_alt: &e★ %player% <##D0BFFF>Let's see what you do at the beginning? &e★
+
+command /setspawn:
+    permission: pspawn.setspawn #Don't forget to enter permission levels for example: in LuckPerms
+    permission message: {@prefix} &c&oYour current Authorization is insufficient for this command.
+    trigger:
+        set {spawn} to location of player
+        set {world} to world of player 
+        send "{@prefix} <##B1AFFF>The spawn point is determined."
+        execute player command "gamerule doImmediateRespawn true" 
+        
+command /spawn:
+    permission: pspawn.spawn
+    permission message: {@prefix} &c&oYour current Authorization is insufficient for this command.
+    cooldown: 15 seconds
+    cooldown message: {@prefix} &c&oPlease try in 15 seconds!
+    trigger:
+        set {dt} to true        
+        set {dt::%player%} to true
+        apply blindness to player for 5.5 seconds 
+        apply slowness to player for 5.5 seconds 
+        loop 6 times:
+            if {dt::%player%} is false:
+                stop            
+            set {_timeLeft} to 6 - loop-number
+            if {dt} is false:
+                stop            
+            send title "{@tp}" with subtitle "<##9500FF>-&f-<##9500FF>- &f&o(&f%{_timeLeft}%&f&o) <##9500FF>-&f-<##9500FF>-" to player
+            send "{@prefix} &f&o%{_timeLeft}%<##AC87C5>'You'll teleport in a second!"
+            if {dt} is false:
+                stop      
+            send action bar "&f%player%! <##FFF8C9>If you take damage, the teleport is canceled." to player
+            if {dt} is false:
+                stop
+            play sound "block.note_block.bell" at player
+            if {dt} is false:
+                stop      
+            wait 1 second
+        if {dt::%player%} is true:
+            send title "" with subtitle "" to player
+            send "{@prefix} <##FFFED3>Teleporting..."
+            send " " to player
+            broadcast "{@prefix} &7You've just teleported to the <##FFFFFED3>%player%&7'Startup zone!"
+            play sound "ENTITY_PLAYER_LEVELUP" at player
+            teleport player to {spawn}
+            apply blindness to player for 25 ticks  
+            play sound "BLOCK_ANVIL_LAND" at player 
+            send title "{@spawntp_message}" with subtitle "{@spawntp_message_alt}" to player
+            wait 20 ticks
+            send "{@prefix} <##B0EBB4>You have been teleported to the Spawn Field!"
+            wait 10 ticks
+            send action bar "" to player
+            remove blindness from player
+        delete {dt::%player%}
+
+on damage:
+    if {dt::%victim%} is set:
+        delete {dt::%victim%}
+        set {dt} to false
+        send title "&c&lDamage Received" with subtitle "&f&oTeleport Canceled due to damage received." to victim
+        send "{@prefix} &c&oTeleportation Canceled for Damage Received." to victim
+        remove blindness from victim
+        remove slowness from victim     
+
+on first join: 
+    if {world} is set:
+        if {spawn} is set:
+            teleport player to {world}
+            teleport player to {spawn}
+        apply blindness to player for 2 seconds  
+        send title "{@welcome_message}" with subtitle "{@welcome_message_alt}" to player
+        play sound "BLOCK_ANVIL_LAND" at player
+        wait 5 second
+        send "{@prefix} &eTo go to the beginning &d&o/spawn" to player
+        wait 10 ticks
+        remove blindness from player
+        
+on join:
+    if {world} is set:
+        if {spawn} is set:
+            teleport player to {world}
+        teleport player to {spawn}
+        apply blindness to player for 2 seconds  
+        send title "{@welcome_message}" with subtitle "{@welcome_message_alt}" to player
+        play sound "BLOCK_ANVIL_LAND" at player 
+        wait 5 second
+        send "{@prefix} &eTo get to the beginning &d&o/spawn" to player
+        wait 10 ticks
+        remove blindness from player
+
+on respawn:
+    if {world} is set:
+        if {spawn} is set:
+            teleport player to {world}
+            teleport player to {spawn}
+            apply blindness to player for 2 seconds 
+            send title "<##A30000>&lDEATH %player%" with subtitle "&f&You are revived!" to player
+            wait 20 ticks
+            remove blindness from player
+    else:
+        send "{@prefix} &bThe spawn point is not set. Please select an area and use the &c/setspawn &bcommand."
+    if {world} is set:  
+        set world of player to {world}  
+    
+# Spigot Link: https://www.spigotmc.org/resources/%E2%9C%A8pspawn-setspawn-skript-easily-%E2%9C%85-1-16-5x1-20.113542/
+# Don't forget to star and comment!❤ 
